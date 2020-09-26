@@ -1,62 +1,52 @@
 import React, { useState, useEffect } from "react";
 import database from "./database/firebase";
 const App = () => {
-  const [userName, setUserName] = useState("");
-  const [age, setAge] = useState("");
-  const addUserHandler = (obj) => {
-    const ref = database.collection("users");
-    const id = "myId#" + Math.random(999).toString();
-    ref
-      .doc(id)
-      .set(obj)
-      .then(() => {
-        console.log("add successfully");
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    const obj = {
-      userName: userName,
-      age: age,
-    };
-    setUserName("");
-    setAge("");
-    addUserHandler(obj);
-  };
-
-  return (
-    <div>
-      <div
-        style={{
-          width: "80%",
-          marginLeft: 20,
-        }}
-      >
-        <form onSubmit={submitHandler}>
-          <label>ชื่อ</label>
-          <input
-            type="text"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-          />
-          <label>อายุ</label>
-          <input
-            type="text"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-          />
-          <button type="submit">Add</button>
-        </form>
-      </div>
-    </div>
-  );
+    
 };
 
 /* 
-การใช้เมธอด doc() ร่วมกับเมธอด set() ใช้สำหรับแก้ไขเอกสารที่อยู่ในคอลเล็กชันจากรหัสเอกสาร แต่ถ้าไม่พบรหัสเอกสารในคอลเล็กชัน ก็จะสร้างเอกสารใหม่ขึ้นมาโดยอัตโนมัติ แต่ถ้าพบรหัสเอกสาร ก็จะนำข้อมูลเอกสารใหม่ไปแทนที่เอกสารเดิม
+ประเภทของข้อมูลที่ Firestore สนับสนุน
+- string ใช้เก็บข้อมูลที่เป็นข้อความ
+- number เก็บข้อมูลในแบบตัวเลข ทั้งแบบจำนวนเต็ม และจุดทศนิยม
+- boolean เก็บค่าความจริงซึ้งได้แก่ true หรือ false
+- map เก็บข้อมูลในแบบออบเจ็กต์ เช่น {produceName: "iPhone 12", prize: 2500}
+- array เก็บข้อมูลในแบบอาร์เรย์ เช่น [23, 45, 96]
+- null เป็นการกำหนดว่าฟิลด์นี้ยังไม่มีค่าใดๆ การกำหนดประเภทข้อมูลในแบบ null เหมาพสำหรับการเก็บข้อมูลที่ยังไม่ทราบรูปแบบที่แน่นอน เช่นกำหนด ฟิลด์สำหรับเก็บไฟล์ที่ผู้ใช้อัปโหลดเป็น null 
+
+- timestamp เก็บข้อมูลวันและเวลา
+- geopoint เก็บพิกัดเส้นรุ้ง (ละติจุด) และเส้นแวง (ลองจิจุด)
+- reference เก็บค่าพาธสำหรับอ้างอิงเอกสารอื่นๆ ที่อยู่ในฐานข้อมูล เช่น products/001 หมายถึง พาธที่อ้างอิงไปยังคอลเล็กชัน products ที่มีรหัสเอกสารเป็น 001
+
+
+พร็อพเพอร์ตี้และเมธอดสำคัญใน DocumentSnapshot (เลือกเอกสารเพียงรายการเดียวด้วยการระบุรหัสเอกสาร)
+ภายในออบเจ็กต์ DocumentSnapshot จะมีพร็อพเพอร์ตี้อยู่หลายตัว แต่พร็อพเพอร์ตี้ที่สำคัญได้แก่ id และ exists
+- พร็อพเพอร์ตี้ id คือ พร็อพเพอร์ตี้ที่เก็บรหัสเอกสาร
+-  พร็อพเพอร์ตี้ exists คือ พร็อพเพอร์ตี้ซึ้งบอกสถานะของเอกสารว่ามีอยู่หรือไม่
+
+ในส่วนของเมธอดที่อยู่ในออบเจ็กต์ DocumentSnapshot ก็มีอยู่หลายเมธอดเช่นเดียวกัน แต่เมธอดที่ใช้งานบ่อยๆ มีดังนี้
+
+- เมธอด doc() ใช้สำหรับนำข้อมูลในฟิลด์ทั้งหมดมาใช้งาน โดยจะรีเทิร์นข้อมูลเอกสารในรูปของออบเจ็กต์
+- เมธอด get() ใช้สำหรับนำข้อมูลในฟิลด์มาใช้งาน โดยเราจะต้องผ่านค่าชื่อฟิลด์เข้าไป เช่น get('userName') หมายถึงต้องการข้อมูลที่อยู่ในฟิลด์ userName
+- เมธอด contains() ใช้สำหรับตรวจสอบว่าฟิลด์ที่สนใจมีอยู่ในเอกสารหรือไม่โดยจะรีเทิร์นค่าเป็น true หรือ false เช่น contains('userName') หมายถึงต้องการตรวจสอบฟิลด์ userName
+
+const docRef = firestore.collection("users")
+.doc("xxxx")
+docRef.get()
+.then((doc)=>{
+  if(doc.exists){
+     console.log("id: ", doc.id);
+     console.log("Document Data:", doc.data());
+     console.log("Field userName: ", doc.get("userName"))
+  } else {
+    console.log("No such document!");
+  }
+})
+.catch((error) => {
+  console.log("Error getting document:", error);
+})
+
 
 
 */
+
 export default App;
