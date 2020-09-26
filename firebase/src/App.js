@@ -1,17 +1,37 @@
 import React, { useState, useEffect } from "react";
 import database from "./database/firebase";
 const App = () => {
-    
+  const docRef = database.collection("users");
+  const query = docRef
+    .where("userName", "==", "เนย์มาร์")
+    .where("age", ">", "20");
+
+  const dataQueryFunc = () => {
+    return query
+      .get()
+      .then((querySnapshot) => {
+        let dataObject = null;
+        querySnapshot.forEach((doc) => {
+          if (doc.exists) {
+            dataObject = doc.data();
+          }
+        });
+
+        console.log(dataObject);
+      })
+      .catch((err) => {
+        console.log("error query", err);
+      });
+  };
+
+  dataQueryFunc();
+
+  return <div>fewf</div>;
 };
 
 /* 
-คิวรี่ข้อมูลที่ซับซ้อนขึ้น
-ในการคิวรี่ด้วยการใช้เมธอด where() หากเงื่อนไขในการคิวรี่มีหลายเงื่อนไขเราสามารถเรียกใช้เมธอด where() ได้หลายครั้ง เพื่อกำหนดเงื่อนไขในแบบที่ต้องการ
+การกำหนดดัชนี (Index)
 
-const docRef = firestore.collection("users")
-const query = docRef
-.where("userName", "==", "โรนัลโด้")
-.where("age", ">", 29);
 */
 
 export default App;
