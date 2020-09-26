@@ -30,25 +30,30 @@ const App = () => {
 };
 
 /* 
-เรียงลำดับผลลัพธ์จากการคิวรี
-โดยปกติเมื่อคิวรีเอกสารมาจากคอลเล็กชัน ผลลัพธ์ของเอกสารที่ได้จากคิวรีจะเรียงจากน้อบไปหามาก (Ascending) โดยใช้ค่าที่อยู่ในรหัสเอกสาร (id) แต่เราสามารถคิวรีข้อมูลโดยใช้ค่าจากฟิลด์อื่นๆ แทนได้ ด้วยเมธอด orderBy()
-
+จำกัดผลลัพธ์จากการคิวรี
+โดยเรียกเมธอด limit() โดยผ่านค่าจำนวนเอกสารสูงสุดลงไป และกำหนดวิธีเรียงข้อมูลว่าจะเรียงจากน้อยไปหามาก หรือมากไปหาน้อย
 รูปแบบ
-query.orederBy(fileName, order)
+query.limit(number)
+- query คือ Query ออบเจ็กต์ซึ้งอ้างอิงไปยังเอกสารที่ตรงกับเงื่อนไขที่กำหนด
+- limit() คือ เมธอด ที่ใช้จำกัดจำนวนผลลัพธ์ที่ได้มาจากการคิวรี
+- number คือจำนวนเอกสารสูงสุดที่ได้มาจากการคิวรี่ในแต่ละครั้ง
 
-cosnt docRef = firestore.collection("users")
-const query = docRef.orederBy("userName", "desc");
+ต่อไปนี้เป็นตัวอย่างการเรียงลำดับผลลัพธ์จากการคิวรี ด้วยค่าจากฟิลด์ age โดยเรียงจากน้อยไปหามาก และจำกัดจำนวนผลลัพธ์แค่ 10 รายการ
+
+const docRef = firestore.collection("users");
+const query = docRef.orderBy("age", "asc");
+query.limit(10);
 query
 .get()
 .then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      if(doc.exists){
-          console.log(doc.data());
-      }
-    })
+  querySnapshot.forEach((doc) => {
+    if(doc.exists){
+        console.log(doc.data());
+    }
+  })
 })
 .catch((err) => {
-  console.error(err);
+  console.log(err);
 })
 
 
