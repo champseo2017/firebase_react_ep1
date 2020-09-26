@@ -40,4 +40,10 @@ function App() {
   return <div className="App">hello</div>;
 }
 
+/* 
+async/await เป็นวิธีเขียนโค้ด Asynchronous ที่ให้ความรู้สึกว่ากำลังเขียนโค้ดแบบ Synchronous อยู่ การใช้คำสั่ง await เป็นการบอกให้ทราบว่า ต้องรอให้ Asynchronnous ทำงานเสร็จก่อน จึงค่อยทำคำสั่งในบรรทัดถัดไป
+
+
+*/
+
 export default App;
