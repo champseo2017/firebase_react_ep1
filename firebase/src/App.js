@@ -27,4 +27,6 @@ const unsub = firestore.collection(collectionName).onSnapshot()
 
 หากเป็นคลาสคอมโพเนต์ เมื่อต้องการนกเลิกการติดตามข้อมูลจาก firestore เราจะเรียกฟังก์ชันเพื่อยกเลิกการติดตาม componentWillUnmount() ดังตัวอย่างต่อไปนี้
 
+คำสั่ง return ที่อยู่ใน useEffect() จะถูกเรียกใช้งานเมื่อคอมโพเนนต์จะถูกนำออกจาก DOM
+
 */
