@@ -30,27 +30,37 @@ const App = () => {
 };
 
 /* 
-ใช้ DocumentSnapshot เป็นตำแหน่ง Query Cursor
-ค่าพารามิเตอร์ที่ผ่านเข้าไปยังเมธอด startAt(), startAfter(), endAt() หรือ endBefore() สามารถกำหนดได้ 2 แบบดังนี้
+แบ่งผลลัพธ์ออกเป็นหน้าย่อยๆ (Pagination)
+เช่นถ้าเอกสารที่ดึงจากฐานข้อมูลมีจำนวน 72 รายการถ้าต้องการแสดงหน้าละ 8 รายการ จำนวนหน้าทั้งหมดที่ต้องใช้คือ 9 หน้า
+หลักการพื้นฐานของการแสดงแต่ละหน้าคือ คิวรีเอกสารเฉพาะที่ต้องแสดงในหน้านั้นๆ เท่านั้น ไม่ต้องคิวรีทั้งหมดในคราวเดียว ซึ้งวิธีแบ่งหน้าใน firestore จะใช้การจำกัดจำนวนเอกสารคิวรี และใช้ Query Cursor เพื่อกำหนดตำแหน่งของเอกสารที่จะนำมาแสดง
 
-- แบบที่ 1 ผ่านค่าข้อมูลในฟิลด์เดียวกับที่พิจารณาอยู่ เช่น เมื่อพิจารณษฟิลด์ userName ซึ้งเก็บรายชื่อนักเรียนเอาไว้ ดังนั้นค่าที่ผ่านเข้าไปยังเมธอด ก็จะเป็นชื่อนักเรียนด้วย เช่น startAt("สมชาย") และ endBefore("มานี") เป็นต้น
+หลักการพื้นฐานของการแบ่งเอกสารเป็นหน้าๆ จะเป็นดังนี้
+1.แสดงหน้าแรกขึ้นมาก่อน โดยจำกัดจำนวนเอกสารด้วยเมธอด limit()
 
-const docRef = firestore.collection("students");
-const query = docRef
-.orderBy("userName")
-.startAt("สมชาย")
-.endBefore("มานี");
+const firstPageRef = firestore
+.collection("products")
+.orderBy("pid", "desc")
+.limit(8);
 
-แบบที่ 2 ผ่านค่า documentSnapshot เริ่มจากใช้เมธอด get() เพื่อเลืกเอกสารที่ต้องการจากฐานข้อมูล ผลลัพธ์ที่ได้จากเมธอด get() จะเป็น dicumentSnapshot เราสามารถใช้ค่านี้ผ่านเข้าไปยังเมธอด startAt() เพื่อกำหนด query cursor บอกตำแหน่งเริ่มต้นของการคิวรีได้
+เอกสารสุดท้ายที่แสดงในหน้าแรก จะทำหน้าที่เป็น Query Cursor เพื่อบอกจุดเริ่มต้นของเอกสารของหน้าถัดไป ดังนั้นเราจะต้องเก็บ DocumentSnapshot นี้ไว้เป็นเอกสารอ้างอิง
 
-ต่อไปนี้เป็นตัวอย่างการเลือกสินค้าที่มีรหัส pid0001 มาจากคอลเล็กชัน ยroducts จากนั้นจึงค้นหาสินค้าอื่นๆ ที่มีราคาสินค้ามากกว่าสินค้าตัวนี้
+2.เอกสารสุดท้ายที่แสดงในหน้าแรก จำทำหน้าที่เป็น Query Cursor เพื่อบอกจุดเริ่มต้นเอกสารของหน้าถัดไป ดังนั้นเราจะต้องเก็บ DocumentSnapshot นี้ไว้เป็นเอกสารอ้างอิง
 
-const productsRef = firestore.collection("products");
-productsRef
-.doc("pid0001")
-.get()
-.then((documentSnapshot) => {
-  const query = productsRef.orderBy("price").startAfter(documentSnapshot);
+firstPageRef.get().then((querySnapshot) => {
+  const currentLength = querySnapshot.docs.length;
+  const lastDocFromFirstPage = querySnapshot.docs[currentLength - 1]
+})
+3.แสดงเอกสารหน้าที่สอง โดยเริ่มแสดงเอกสารต่อจากเอกสารสุดท้ายของหน้าแรก และจำกัดจำนวนเอกสารด้วยเมธอด limit()
+
+firstPageRef.get().then((querySnapshot) => {
+  const currentLength = querySnapshot.docs.length;
+  const lastDocFromFirstPage = querySnapshot.docs[currentLength - 1];
+  const query = firstPageRef.startAfter(lastDocFromFirstPage);
+  query.get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data().price)
+    })
+  })
 })
 
 */
