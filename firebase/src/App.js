@@ -1,74 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component } from "react";
 import database from "./database/firebase";
-const App = () => {
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    let mount = true;
-    if (mount) {
-      const ref = database.collection("users");
-      ref.onSnapshot(
-        (snapshot) => {
-          let tempDataArray = [];
-          snapshot.forEach((doc) => {
-            if (doc.exists) {
-              tempDataArray = [
-                ...tempDataArray,
-                {
-                  id: doc.id,
-                  userName: doc.data().userName,
-                  age: doc.data().age,
-                },
-              ];
-            }
-          });
-          setData((oldDataArray) => tempDataArray);
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-    }
-    return () => {
-      return (mount = false);
-    };
-  }, []);
+export default class App extends Component {
+  unsubscribe = null;
+  componentDidMount() {
+    const usersRef = database.collection("users");
+    this.unsubscribe = usersRef.onSnapshot((snapshot) => {
+      console.log(snapshot.docs);
+    })
+  }
 
-  return (
-    <div>
-      <div
-        style={{
-          width: "80%",
-          marginLeft: 20,
-        }}
-      >
-        <table>
-          <tbody>
-          {data.map((item, index) => {
-            return (
-              <tr
-                key={index}
-                style={
-                  index % 2 === 0
-                    ? {
-                        backgroundColor: "lightgray",
-                      }
-                    : null
-                }
-              >
-                <td>{item.id}</td>
-                <td>{item.userName}</td>
-                <td>{item.age}</td>
-              </tr>
-            );
-          })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
 
-/*
- */
+  render() {
+    return <div></div>
+  }
+}
+/* 
+ยกเลิกติดตามเมื่อไม่ได้ใช้ข้อมูล
+ในการใช้งานข้อมูลในแบบเรียลไทม์ เราจะกำหนด event listener เพื่อรอรับข้อมูลจากฐานข้อมูล (subscribe) แต่เมื่อใดที่เราไม่ได้ใช้งานข้อมูลแล้ว ก็ควรจะยกเลิกการติดตาม (Unsubscribe)
 
-export default App;
+การเรียกเมธอด onSnapshot() เพื่อติดตามข้อมูลแบบเรียลไทม์นั้น ค่าที่รีเทิร์นกลับมาจะเป็นฟังก์ชันสำหรับใช้ยกเลิกการติดตามข้อมูลจาก firestore(unsubscribe) ดังนั้นเราสามารถเรียกใช้ฟังก์ชันนี้เพื่อยกเลิกการติดตามได้
+
+รูปแบบ
+const unsub = firestore.collection(collectionName).onSnapshot()
+
+- unsub เป็นฟังก์ชันที่ใช้สำหรับยกเลิกการติดตามข้อมูลในคอลเล็กชัน
+- firestore เป็นออบเจ็กต์ที่ใช้ติดต่อ firestore
+
+หากเป็นคลาสคอมโพเนต์ เมื่อต้องการนกเลิกการติดตามข้อมูลจาก firestore เราจะเรียกฟังก์ชันเพื่อยกเลิกการติดตาม componentWillUnmount() ดังตัวอย่างต่อไปนี้
+
+*/
