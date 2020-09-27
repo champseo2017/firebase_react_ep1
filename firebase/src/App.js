@@ -1,22 +1,18 @@
 import React, { useState, useEffect, Component } from "react";
 import database from "./database/firebase";
-export default class App extends Component {
-  unsubscribe = null;
-  componentDidMount() {
+const App = () => {
+  useEffect(() => {
     const usersRef = database.collection("users");
-    this.unsubscribe = usersRef.onSnapshot((snapshot) => {
+    const unsubscribe = usersRef.onSnapshot((snapshot) => {
       console.log(snapshot.docs);
-    })
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
-  render() {
-    return <div></div>
-  }
-}
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+  return <div></div>;
+};
+export default App;
 /* 
 ยกเลิกติดตามเมื่อไม่ได้ใช้ข้อมูล
 ในการใช้งานข้อมูลในแบบเรียลไทม์ เราจะกำหนด event listener เพื่อรอรับข้อมูลจากฐานข้อมูล (subscribe) แต่เมื่อใดที่เราไม่ได้ใช้งานข้อมูลแล้ว ก็ควรจะยกเลิกการติดตาม (Unsubscribe)
