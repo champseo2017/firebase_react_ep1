@@ -1,68 +1,93 @@
 import React, { useState, useEffect } from "react";
 import database from "./database/firebase";
 const App = () => {
-  const docRef = database.collection("users");
-  const query = docRef
-    .where("userName", "==", "เนย์มาร์")
-    .where("age", ">", "20");
+  const [productLists, setProductLists] = useState([]);
+  const [currentCursor, setCurrentCursor] = useState(null);
+  useEffect(() => {
+    let mount = true;
+    if (mount) {
+      const firstPageRef = database
+        .collection("products")
+        .orderBy("pid", "asc")
+        .limit(3);
 
-  const dataQueryFunc = () => {
-    return query
-      .get()
-      .then((querySnapshot) => {
-        let dataObject = null;
-        querySnapshot.forEach((doc) => {
+      firstPageRef.get().then((querySnapshot) => {
+        let tempLists = [];
+        querySnapshot.docs.forEach((doc) => {
           if (doc.exists) {
-            dataObject = doc.data();
+            const currentProduct = {
+              pid: doc.data().pid,
+              name: doc.data().name,
+              price: doc.data().price,
+            };
+            tempLists = [...tempLists, currentProduct];
           }
         });
-
-        console.log(dataObject);
-      })
-      .catch((err) => {
-        console.log("error query", err);
+        setProductLists((prv) => tempLists);
+        const currentLength = querySnapshot.docs.length;
+        const currentCursorFromFirstPage =
+          querySnapshot.docs[currentLength - 1];
+        setCurrentCursor(currentCursorFromFirstPage);
       });
+    }
+
+    return () => {
+      return (mount = false);
+    };
+  }, []);
+
+  const onMoreProducts = () => {
+    const nextPageRef = database
+      .collection("products")
+      .orderBy("pid", "asc")
+      .limit(3);
+
+    nextPageRef.get().then((querySnapshot) => {
+      const currentLength = querySnapshot.docs.length;
+      if (!currentLength) {
+        return;
+      }
+      const query = nextPageRef.startAfter(currentCursor);
+      query.get().then((querySnapshot) => {
+        let tempNewArray = [];
+        querySnapshot.forEach((doc) => {
+          if (doc.exists) {
+            tempNewArray = [
+              ...tempNewArray,
+              {
+                pid: doc.data().pid,
+                name: doc.data().name,
+                price: doc.data().price,
+              },
+            ];
+          }
+        });
+        setProductLists([...productLists, ...tempNewArray]);
+        const currentCursorFromNextPage = querySnapshot.docs[currentLength - 1];
+        setCurrentCursor(currentCursorFromNextPage);
+      });
+    });
   };
 
-  dataQueryFunc();
-
-  return <div>fewf</div>;
+  return (
+    <div>
+      <ul>
+        {productLists.map((product, index) => {
+          return (
+            <li key={index}>
+              # {product.pid}:{product.name}: % {product.price}
+            </li>
+          );
+        })}
+      </ul>
+      <hr />
+      {currentCursor ? (
+        <button onClick={onMoreProducts}>More Products...</button>
+      ) : (
+        <div>No more product</div>
+      )}
+    </div>
+  );
 };
-
-/* 
-แบ่งผลลัพธ์ออกเป็นหน้าย่อยๆ (Pagination)
-เช่นถ้าเอกสารที่ดึงจากฐานข้อมูลมีจำนวน 72 รายการถ้าต้องการแสดงหน้าละ 8 รายการ จำนวนหน้าทั้งหมดที่ต้องใช้คือ 9 หน้า
-หลักการพื้นฐานของการแสดงแต่ละหน้าคือ คิวรีเอกสารเฉพาะที่ต้องแสดงในหน้านั้นๆ เท่านั้น ไม่ต้องคิวรีทั้งหมดในคราวเดียว ซึ้งวิธีแบ่งหน้าใน firestore จะใช้การจำกัดจำนวนเอกสารคิวรี และใช้ Query Cursor เพื่อกำหนดตำแหน่งของเอกสารที่จะนำมาแสดง
-
-หลักการพื้นฐานของการแบ่งเอกสารเป็นหน้าๆ จะเป็นดังนี้
-1.แสดงหน้าแรกขึ้นมาก่อน โดยจำกัดจำนวนเอกสารด้วยเมธอด limit()
-
-const firstPageRef = firestore
-.collection("products")
-.orderBy("pid", "desc")
-.limit(8);
-
-เอกสารสุดท้ายที่แสดงในหน้าแรก จะทำหน้าที่เป็น Query Cursor เพื่อบอกจุดเริ่มต้นของเอกสารของหน้าถัดไป ดังนั้นเราจะต้องเก็บ DocumentSnapshot นี้ไว้เป็นเอกสารอ้างอิง
-
-2.เอกสารสุดท้ายที่แสดงในหน้าแรก จำทำหน้าที่เป็น Query Cursor เพื่อบอกจุดเริ่มต้นเอกสารของหน้าถัดไป ดังนั้นเราจะต้องเก็บ DocumentSnapshot นี้ไว้เป็นเอกสารอ้างอิง
-
-firstPageRef.get().then((querySnapshot) => {
-  const currentLength = querySnapshot.docs.length;
-  const lastDocFromFirstPage = querySnapshot.docs[currentLength - 1]
-})
-3.แสดงเอกสารหน้าที่สอง โดยเริ่มแสดงเอกสารต่อจากเอกสารสุดท้ายของหน้าแรก และจำกัดจำนวนเอกสารด้วยเมธอด limit()
-
-firstPageRef.get().then((querySnapshot) => {
-  const currentLength = querySnapshot.docs.length;
-  const lastDocFromFirstPage = querySnapshot.docs[currentLength - 1];
-  const query = firstPageRef.startAfter(lastDocFromFirstPage);
-  query.get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      console.log(doc.data().price)
-    })
-  })
-})
-
-*/
 
 export default App;
