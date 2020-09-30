@@ -10,8 +10,8 @@ const firebaseConfig = {
     messagingSenderId: "973555100317",
     appId: "1:973555100317:web:6542e1240033cc42118274"
   };
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+const firebaseApp = firebase.initializeApp(firebaseConfig)
 export const firestore = firebaseApp.firestore();
 export const auth = firebaseApp.auth();
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
-export default firebaseApp
+export default firebaseApp;
