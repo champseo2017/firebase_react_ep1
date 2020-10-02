@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { auth } from "./database/firebase";
-import SignIn from "./SignIn";
+import Header from "./components/Header";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -18,24 +18,8 @@ const App = () => {
   }, [user]);
 
   return (
-    <div className="App">
-      <SignIn />
-      {user ? (
-        <div>
-          <hr />
-          <div>uid: {user.uid}</div>
-          <div>name: {user.displayName}</div>
-          <div>email: {user.email}</div>
-          <img
-            src={user.photoURL}
-            alt="user"
-            style={{
-              width: 50,
-              height: 50,
-            }}
-          />
-        </div>
-      ) : null}
+    <div className="container">
+      <Header />
     </div>
   );
 };
