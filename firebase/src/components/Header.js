@@ -126,4 +126,55 @@ const Header = () => {
   );
 };
 
+/* 
+1.ลงทะเบียนด้วยอีเมล / รหัสผ่าน
+จะใช้เมธอด createUserWithEmailAndPassword(email, password) โดยค่าที่รีเทิร์นกลับมาจากเมธอดนี้จะอยู่ในรูปของออบเจ็กต์ Promide ซึ้งถ้าลงทะเบียนสำเร็จเราก็จะได้ข้อมูลของผู้ใช้กลับมา
+
+ firebase.auth()
+ .createUserWithEmailAndPassword(email, password)
+ .then((result) => {
+    console.log(result.user)
+ })
+ .catch((err) => {
+   console.log(err)
+ })
+
+ firebase.auth()
+ .createUserWithEmailAndPassword(email, password)
+ .then(async (result) => {
+   if(result){
+      const userRef = firestore.collection("users").
+      doc(result.user.uid);
+      const doc = await userRef.get();
+      if(!doc.data()){
+          await userRef.set({
+            uid: result.user.uid,
+            displayName: result.user.email,
+            photoURL: result.user.photoURL,
+            email: result.user.email,
+            created: new Date().valueOf(),
+            role: "user"
+          })
+      }
+   }
+ })
+ .catch((err) => {
+   console.log(err)
+ })
+
+ ขั้นตอนที่ 2 เข้าสู่ะบบด้วยอีเมล/รหัสผ่าน
+ เมื่อต้องการล็อกอินด้วยอีเมล/รหัสผ่าน จะใช้เมธอด singInWithEmailAndPassword(email, password) 
+
+ firebase.auth()
+ .signInWithEmailAndPassword(email, password)
+ .then((result) => {
+   console.log(result.user)
+ })
+ .catch((err) => {
+   console.log(err)
+ })
+
+
+*/
+
 export default Header;
