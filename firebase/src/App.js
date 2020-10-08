@@ -1,25 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { auth } from "./database/firebase";
-import Header from "./components/Header";
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import LoginForm from "./components/LoginForm";
 
 const App = () => {
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const authUnsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-      } else {
-        setUser(null);
-      }
-    });
-    return () => {
-      authUnsubscribe();
-    };
-  }, [user]);
-
   return (
     <div className="container">
-      <Header />
+      <LoginForm />
     </div>
   );
 };
