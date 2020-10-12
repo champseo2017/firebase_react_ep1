@@ -17,16 +17,19 @@ ReactDOM.render(
 serviceWorker.unregister();
 
 /* 
-ถ้าต้องการอนุญาติให้ใครๆ ก็สามารถ read ได้ แต่จำกัดการ write ได้เฉพาะผู้ที่เป็นเจ้าของเอกสาร ก็ให้กำหนดกฏเป็นดังนี้
+
+
+การกำหนดกฏสำหรับคอลเล็กชันย่อย
+เราสามารถกำหนดกฏไปยังคอลเล็กชันย่อย เช่น คอลเล็กชัน users เก็บข้อมูลของผู้ใช้ และมีคอลเล็กชัน chats เป็นคอลเล็กชันย่อยที่อยู่ภายใต้ users 
 
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
-      allow read;
-      allow write: if request.auth.uid === userId;
+      match /chats/{chatId} {
+        allow read, write: if request.auth.uid != null;
+      }
     }
   }
 }
-
 
 */
