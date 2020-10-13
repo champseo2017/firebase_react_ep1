@@ -18,18 +18,22 @@ serviceWorker.unregister();
 
 /* 
 
-
-การกำหนดกฏสำหรับคอลเล็กชันย่อย
-เราสามารถกำหนดกฏไปยังคอลเล็กชันย่อย เช่น คอลเล็กชัน users เก็บข้อมูลของผู้ใช้ และมีคอลเล็กชัน chats เป็นคอลเล็กชันย่อยที่อยู่ภายใต้ users 
+กำหนดกฏหลายเงื่อนไข
+เช่น กำหนดกฏสำหรับคอลเล็กชัน users และ กำหนดกฏสำหรับคอลเล็กชัน posts 
 
 service cloud.firestore {
-  match /databases/{database}/documents {
+  match /datanases/{database}/documents {
     match /users/{userId} {
-      match /chats/{chatId} {
-        allow read, write: if request.auth.uid != null;
-      }
+      allow read;
+      allow write: if request.auth.uid == userId;
+    }
+    match /posts/{postId} {
+      allow read;
+      allow write: if request.auth.uid != null
     }
   }
 }
+
+
 
 */
