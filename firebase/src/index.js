@@ -18,21 +18,19 @@ serviceWorker.unregister();
 
 /* 
 
-กำหนดกฏหลายเงื่อนไข
-เช่น กำหนดกฏสำหรับคอลเล็กชัน users และ กำหนดกฏสำหรับคอลเล็กชัน posts 
+กำหนดกฏเพื่ออณุญาติให้เจ้าของไฟล์เท่านั้นที่แก้ไขเอกสารได้
 
 service cloud.firestore {
-  match /datanases/{database}/documents {
+  match /databases/{database}/documents {
     match /users/{userId} {
-      allow read;
-      allow write: if request.auth.uid == userId;
-    }
-    match /posts/{postId} {
-      allow read;
-      allow write: if request.auth.uid != null
+       allow read, update, delete: if request.auth.uid == userId;
+       allow create: if request.auth.uid != null;
     }
   }
 }
+
+อนุญาติให้ read, update หรือ delete เฉพาะผู้ใช้ที่เป็นเจ้าของเอกสาร 
+อนุญาติให้ create ได้เฉพาะผู้ใช้ที่ล็อกอินเท่านั้น
 
 
 
