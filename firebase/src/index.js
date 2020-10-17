@@ -18,21 +18,18 @@ serviceWorker.unregister();
 
 /* 
 
-การกำหนดฟังกืชัน security rules
-หากเงื่อนไขที่กำหนดใน security rules มีความซับซ้อน เราสามารถสร้างฟังก์ชันเพื่อทำหน้าที่ตรวจสอบกฏ โดยรีเทิร์นผลลัพธ์มาเป็น true หรือ false 
-ต่อไปนี้เป็นตัวอย่างฟังก์ชัน isAdmin() สำหรับตรวจสอบว่า ผู้ใช้มีฐานะเป็น admin และกำหนดฟังก์ชัน isLogin() เพื่อตรวจสอบว่าผู้ใช้ได้ล็อกอินเข้าสู่ระบบหรือไม่
+จำกัดจำนวนเอกสารในแต่ละคิวรี
+การใช้ request method ในแบบ list เพื่อคิวรีเอกสารจากคอลเล็กชันไปใช้งาน
+request.query.limit 
 
-service cloud.firestore {
+service cloud.firestore{
   match /databases/{database}/documents {
-    match /users/{userId}/{document=**} {
-      function isAdmin() {
-        return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
-      }
-      function isLogin() {
-        return request.auth.uid != null
-      }
-      allow read, update, delete: if isAdmin() && request.auth.uid == userId;
-      allow create: if isLogin();
+    function isLogin() {
+      return request.auth.uid != null
+    }
+    match /posts/{postId}{
+      allow list: if request.query.limit <= 15 && isLogin();
+      allow get, write: if isLogin()
     }
   }
 }
