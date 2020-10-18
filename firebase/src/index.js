@@ -18,20 +18,16 @@ serviceWorker.unregister();
 
 /* 
 
-จำกัดจำนวนเอกสารในแต่ละคิวรี
-การใช้ request method ในแบบ list เพื่อคิวรีเอกสารจากคอลเล็กชันไปใช้งาน
-request.query.limit 
+อ้างอิงไปยังโฟลเดอร์หรือไฟล์ที่ต้องการด้วยเมธอด child
+การอ้างอิงไฟล์หรือโฟลเดอร์ต่างๆ ใน cloud storage คล้ายกับการอ้างอิงคอลเล็กชัน และเอกสารใน firestore คือ สามารถใช้พาธเพื่อไปยังโฟลเดอร์ ตามด้วยเครื่องหมาย / แล้วตามด้วยชื่อไฟล์ เช่น mainBucket/myfile.png
 
-service cloud.firestore{
-  match /databases/{database}/documents {
-    function isLogin() {
-      return request.auth.uid != null
-    }
-    match /posts/{postId}{
-      allow list: if request.query.limit <= 15 && isLogin();
-      allow get, write: if isLogin()
-    }
-  }
+import React from 'react'
+import {storage} from './database/firebase'
+export default function TestStorage() {
+  const mainBucketRef = storage.child("mainBucket");
+  const subBucketRef = storage.child("mainBucket/subBucket")
+  const videoRef = storage.child("mainBucket/subBucket/56350.mp4")
+  return <div></div>
 }
 
 
