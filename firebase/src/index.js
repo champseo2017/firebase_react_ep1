@@ -18,18 +18,19 @@ serviceWorker.unregister();
 
 /* 
 
-อ้างอิงไปยังโฟลเดอร์หรือไฟล์ที่ต้องการด้วยเมธอด child
-การอ้างอิงไฟล์หรือโฟลเดอร์ต่างๆ ใน cloud storage คล้ายกับการอ้างอิงคอลเล็กชัน และเอกสารใน firestore คือ สามารถใช้พาธเพื่อไปยังโฟลเดอร์ ตามด้วยเครื่องหมาย / แล้วตามด้วยชื่อไฟล์ เช่น mainBucket/myfile.png
+อับโหลดไฟล์ด้วยเมธอด put
+การอัพโหลดเราจะต้องอ้างอิงไปยังตำแหน่งของไฟล์ที่ต้องการก่อน (ตำแหน่งโฟลเดอร์และชื่อไฟล์) จากนั้นจึงใช้เมธอด put() เพื่ออัพโหลด
 
-import React from 'react'
-import {storage} from './database/firebase'
-export default function TestStorage() {
-  const mainBucketRef = storage.child("mainBucket");
-  const subBucketRef = storage.child("mainBucket/subBucket")
-  const videoRef = storage.child("mainBucket/subBucket/56350.mp4")
-  return <div></div>
-}
+const fileRef = storage.child("mainBucket/subBucket/myfile.jpg");
+fileRef
+.put(file)
+.then((response) => {
+  console.log(response);
+})
 
+-ประกาศตัวแปร fileRef เพื่ออ้างอิงไปยังไฟล์ชื่อว่า myfile.jpg ซึ้งหากไฟล์นี้ไม่มีอยู่ cloud storage ก็จะสร้างให้ใหม่โดยอัตโนมัติ
+
+put(file)
 
 
 */
