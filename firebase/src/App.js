@@ -106,3 +106,28 @@ const App = () => {
   );
 };
 export default App;
+
+/* 
+  กฏที่อนุญาตให้แก้ไขไฟล์เฉพาะเจ้าของไฟล์
+  ตัวอย่างการจำกัดให้อัปโหลดไปยัง bucket ชื่อว่า user-profiles
+  เท่านั้น โดยอณุญาตให้ดูไฟล์ได้ แต่ถ้าต้องการแก้ไขก็ต้องเป็นเจ้าของไฟล์เท่านั้น 
+  การอัปโหลดไฟล์ ที่สามารถตรวจสอบเจ้าของไฟล์นั้น มีหลายวิธี แต่วิธีที่สะดวกที่สุดคือ กำหนดชื่อโฟลเดอร์เป็นรหัส uid ของผู้ใช้ ดังตัวอย่างต่อไปนี้
+
+  const targetRef = subBucketRef
+  .child(`/user-profiles/${userId}/${photoURL}`);
+  const uploadTask = targetRef.put(file);
+
+
+  rules_version = '2';
+service firebase.storage {
+   match /b/{bucket}/o {
+     match /mainBucket/{userId} { // /mainBucket/{userId}/{photoURL}
+        allow read;
+        allow write: if request.auth.uid == userId;
+     }
+   }
+}
+
+
+
+*/
