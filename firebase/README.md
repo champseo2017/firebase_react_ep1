@@ -1,68 +1,19 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# deploy firebase
+# 1. ไปยังโฟลเดอร์ซึ้งเก็บ React แอพพลิเคชั่นเอาไว้ เช่น cd login-project
+# 2. ล๊อกอินไปยัง Firebase ด้วยการพิมพ์คำสั่ง firebase login แล้วกด <Enter>
+# 3. firebase init
+# 3.1 จะมีข้อความถามว่าจะให้สร้าง Firebase โปรเจ็กต์ในโฟลเดอร์นี้หรือไม่ กด <Enter> เพื่อยอมรับ
+# 3.2 เลือกบริการของ Firebase ที่ต้องการใช้งาน โดยใช้ลูกศรเลื่อนไปยังบริการที่ต้องการ แล้วกดคีย์ <Spacebar> เช่น เลื่อนไปที่ Firestore แล้วกด <Spacebar> เราจะพบเครื่องหมาย * หน้าบริการนั้นๆ 
+# 3.3 บริการทั้งหมดที่ต้องใช้งานในตัวอย่างนี้คือ Firestore, Hosting และ Storage เมื่อเลือกครบแล้วกด <Enter>
+# 3.4 จะมีหน้าต่างถามว่าจะสร้างโปรเจ็กต์ใหม่ หรือใช้โปนเจ็กต์เดิมที่มีอยู่ ซึ้งในตัวอย่างคือเลือกโปรเจ็กต์ที่ได้เคยสร้างไว้แล้ว (Use an existing project) จึงกด <Enter>
+# 3.5 ใช้ลูกศรขึ้นหรือลงเลือกชื่อโปรเจคแล้วกด <Enter>
+# 3.8 จะมีข้อความแสดงให้ทราบว่า ไฟล์ที่ใช้กำหนดกฏความปลอดภัยของ Firestore อยู่ที่ไฟล์ใด ในตัวอย่างให้กด <Enter> เพื่อใช้ไฟล์ firestore.rules
+# 3.9 เลือกไฟล์ที่ใช้สำหรับเก็บการตั้งค่าดัชนีที่ใช้กับ Firestore ให้กด <Enter> เพื่อใช้ไฟล์ firestore.indexs.json
+# 3.10 จะมีข้อความถามว่าจะให้ใช้ข้อมูลจากโฟลเดอร์ใด  ซึ้งค่าเริ่มต้นคือ public แต่ใน react แอพพลิเคชั่นไม่ได้เก็บข้อมูลแอพพิลเคชั่นไว้ในโฟลเดอร์ public ดังนั้นจึงใช้โฟลเดอร์นี้ไม่ได้ (กรอกชื่อเป็น build แล้วกด <Enter>)
+# 3.11 จะมีข้อความถามว่า ต้องการตั้งค่าสำหรับแอพพลิเคชั่นในแบบ spa ใหม่หรือไม่ (Single Page Application) ให้กด <Enter> เนื่องจากไม่ต้องการสร้างใหม่
+# 3.12 จะมีข้อความบอกว่า ได้พบไฟล์ index.html อยู่แล้ว จะให้เขียนทับหรือไม่ กด<Enter> เพื่อข้ามไปเลยไม่ต้องเขียนทับ
+# 3.13 จะมีข้อความแสดงให้ทราบว่า ไฟล์ที่ใช้กำหนดกฏความปลอดภัยของ storage อยู๋ที่ไฟล์ใด ให้กด <Enter> เพื่อใช้ไฟล์ storage.rules
+# 3.14 เช็คที่โปรเจคจะพบไฟล์ต่างๆที่สร้างจาก firebase init
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+# ขั้นตอน อัปโหลดไปยัง firebase hosting
+# 1. firebase deploy
